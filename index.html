@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Michael Deskevich (mikedeskevich@gmail.com)">
+  <meta name="dcterms.date" content="2020-03-20">
+  <title>Modeling Infection Disease</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://revealjs.com/css/reset.css">
+  <link rel="stylesheet" href="https://revealjs.com/css/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="https://revealjs.com/css/theme/black.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'https://revealjs.com/css/print/pdf.css' : 'https://revealjs.com/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="https://revealjs.com/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Modeling Infection Disease</h1>
+  <p class="author">Michael Deskevich (mikedeskevich@gmail.com)</p>
+  <p class="date">March 20, 2020</p>
+</section>
+
+<section id="modeling-infection-disease" class="slide level1">
+<h1>Modeling Infection Disease</h1>
+<ul>
+<li>I’m a modeler at heart and I wanted to see if all of the <em>Social Distancing</em> being prescribed makes a difference. I have a gut feeling that it does, and that we’re doing the right thing here, as opposed to the UK, which is going for herd immunity as their solution.</li>
+<li>My plan here is to make a <em>very simple</em> model with some <em>very rough assumptions</em> that I’ve pulled out of the media and do a series of models to track the number of people infected and the number dead while an infectious disease makes it’s way through a city.</li>
+</ul>
+</section>
+<section id="the-city" class="slide level1">
+<h1>The City</h1>
+<ul>
+<li>I chose to use a city of 65536 (64K) people. To make my math and my plotting easy, I needed a power of 4 and 65536 = 256 x 256. It’s about half the size of Boulder, the next easy size up would be 2 times the size of Boulder and would take longer to compute, so I stopped there.</li>
+</ul>
+</section>
+<section id="the-interactions" class="slide level1">
+<h1>The Interactions</h1>
+<section id="approach" class="level2">
+<h2>Approach</h2>
+<ul>
+<li>I start with some small proportion of the population already infected.</li>
+<li>I go through every person and randomly choose another person to interact with, if either is infected, they will infect the other with some probability.</li>
+<li>Anyone who is infectious will stay infectious for a chunk of time, after which they either recover or die.</li>
+<li>Infectious people who recover are labelled infected and are no longer carriers nor susceptible to the disease.</li>
+<li>I repeat until there are no infectious people.</li>
+</ul>
+</section>
+<section id="details" class="level2">
+<h2>Details</h2>
+<ul>
+<li>Proportion of the population infected at the start <code>0.1%</code>.</li>
+<li>Infection rate during an interaction <code>20%</code>.</li>
+<li>Infection time <code>20 days</code>.</li>
+<li>Death rate <code>0.1%</code> unless the hospitals are overcrowded, then it becomes <code>1.0%</code>.</li>
+<li>The hospitals become overcrowded when <code>25%</code> of the city is infectious.</li>
+</ul>
+</section>
+</section>
+<section id="social-distancing" class="slide level1">
+<h1>Social Distancing</h1>
+<ul>
+<li>To model social distancing, I took the city and split it in half horizontally and vertically and made 4 regions of 16K people each. People can’t leave the regions and interact.<br />
+</li>
+<li>I then kept breaking each region into 4 sub-regions until I reach a family-size region. The total number of people in every simulation was 64K people.</li>
+</ul>
+<pre><code>1 city of 64K people
+4 regions of 16K people each
+16 regions of 4K people each
+64 regions of 1K people each
+256 regions of 256 people each
+1K regions of 64 people each
+4K regions of 16 people each
+16K regions of 4 people each</code></pre>
+</section>
+<section id="travel" class="slide level1">
+<h1>Travel</h1>
+<ul>
+<li><p>Travelling allows the infection to move between regions.</p></li>
+<li><p>Unless we go with full martial law, it’s impossible to restrict travel completely, so there will be some travel between regions. I model 4 cases.</p></li>
+</ul>
+<pre><code>No Travel
+1 Person in 1000 Travels daily
+1 Person in 100 Travels daily
+1 Person in 10 Travels daily</code></pre>
+</section>
+<section id="no-travel" class="slide level1">
+<h1>No Travel</h1>
+<section id="region-with-64k-people-whole-city" class="level2">
+<h2>1 Region with 64K People (Whole City)</h2>
+<p><img data-src="leak000/all-65536.gif" /></p>
+</section>
+<section id="regions-of-16k-people-each" class="level2">
+<h2>4 Regions of 16K People each</h2>
+<p><img data-src="leak000/all-16384.gif" /></p>
+</section>
+<section id="regions-of-4k-people-each" class="level2">
+<h2>16 Regions of 4K People each</h2>
+<p><img data-src="leak000/all-4096.gif" /></p>
+</section>
+<section id="regions-of-1k-people-each" class="level2">
+<h2>64 Regions of 1K People each</h2>
+<p><img data-src="leak000/all-1024.gif" /></p>
+</section>
+<section id="regions-of-256-people-each" class="level2">
+<h2>256 Regions of 256 People each</h2>
+<p><img data-src="leak000/all-256.gif" /></p>
+</section>
+<section id="k-regions-of-64-people-each" class="level2">
+<h2>1K Regions of 64 People each</h2>
+<p><img data-src="leak000/all-64.gif" /></p>
+</section>
+<section id="k-regions-of-16-people-each" class="level2">
+<h2>4K Regions of 16 People each</h2>
+<p><img data-src="leak000/all-16.gif" /></p>
+</section>
+<section id="k-regions-of-4-people-each-16k-families" class="level2">
+<h2>16K Regions of 4 People each (16K Families)</h2>
+<p><img data-src="leak000/all-4.gif" /></p>
+</section>
+</section>
+<section id="person-in-1000-travels-daily" class="slide level1">
+<h1>1 Person in 1000 Travels Daily</h1>
+<section id="region-with-64k-people-whole-city-1" class="level2">
+<h2>1 Region with 64K People (Whole City)</h2>
+<p><img data-src="leak001/all-65536.gif" /></p>
+</section>
+<section id="regions-of-16k-people-each-1" class="level2">
+<h2>4 Regions of 16K People each</h2>
+<p><img data-src="leak001/all-16384.gif" /></p>
+</section>
+<section id="regions-of-4k-people-each-1" class="level2">
+<h2>16 Regions of 4K People each</h2>
+<p><img data-src="leak001/all-4096.gif" /></p>
+</section>
+<section id="regions-of-1k-people-each-1" class="level2">
+<h2>64 Regions of 1K People each</h2>
+<p><img data-src="leak001/all-1024.gif" /></p>
+</section>
+<section id="regions-of-256-people-each-1" class="level2">
+<h2>256 Regions of 256 People each</h2>
+<p><img data-src="leak001/all-256.gif" /></p>
+</section>
+<section id="k-regions-of-64-people-each-1" class="level2">
+<h2>1K Regions of 64 People each</h2>
+<p><img data-src="leak001/all-64.gif" /></p>
+</section>
+<section id="k-regions-of-16-people-each-1" class="level2">
+<h2>4K Regions of 16 People each</h2>
+<p><img data-src="leak001/all-16.gif" /></p>
+</section>
+<section id="k-regions-of-4-people-each-16k-families-1" class="level2">
+<h2>16K Regions of 4 People each (16K Families)</h2>
+<p><img data-src="leak001/all-4.gif" /></p>
+</section>
+</section>
+<section id="person-in-100-travels-daily" class="slide level1">
+<h1>1 Person in 100 Travels Daily</h1>
+<section id="region-with-64k-people-whole-city-2" class="level2">
+<h2>1 Region with 64K People (Whole City)</h2>
+<p><img data-src="leak010/all-65536.gif" /></p>
+</section>
+<section id="regions-of-16k-people-each-2" class="level2">
+<h2>4 Regions of 16K People each</h2>
+<p><img data-src="leak010/all-16384.gif" /></p>
+</section>
+<section id="regions-of-4k-people-each-2" class="level2">
+<h2>16 Regions of 4K People each</h2>
+<p><img data-src="leak010/all-4096.gif" /></p>
+</section>
+<section id="regions-of-1k-people-each-2" class="level2">
+<h2>64 Regions of 1K People each</h2>
+<p><img data-src="leak010/all-1024.gif" /></p>
+</section>
+<section id="regions-of-256-people-each-2" class="level2">
+<h2>256 Regions of 256 People each</h2>
+<p><img data-src="leak010/all-256.gif" /></p>
+</section>
+<section id="k-regions-of-64-people-each-2" class="level2">
+<h2>1K Regions of 64 People each</h2>
+<p><img data-src="leak010/all-64.gif" /></p>
+</section>
+<section id="k-regions-of-16-people-each-2" class="level2">
+<h2>4K Regions of 16 People each</h2>
+<p><img data-src="leak010/all-16.gif" /></p>
+</section>
+<section id="k-regions-of-4-people-each-16k-families-2" class="level2">
+<h2>16K Regions of 4 People each (16K Families)</h2>
+<p><img data-src="leak010/all-4.gif" /></p>
+</section>
+</section>
+<section id="person-in-10-travels-daily" class="slide level1">
+<h1>1 Person in 10 Travels Daily</h1>
+<section id="region-with-64k-people-whole-city-3" class="level2">
+<h2>1 Region with 64K People (Whole City)</h2>
+<p><img data-src="leak100/all-65536.gif" /></p>
+</section>
+<section id="regions-of-16k-people-each-3" class="level2">
+<h2>4 Regions of 16K People each</h2>
+<p><img data-src="leak100/all-16384.gif" /></p>
+</section>
+<section id="regions-of-4k-people-each-3" class="level2">
+<h2>16 Regions of 4K People each</h2>
+<p><img data-src="leak100/all-4096.gif" /></p>
+</section>
+<section id="regions-of-1k-people-each-3" class="level2">
+<h2>64 Regions of 1K People each</h2>
+<p><img data-src="leak100/all-1024.gif" /></p>
+</section>
+<section id="regions-of-256-people-each-3" class="level2">
+<h2>256 Regions of 256 People each</h2>
+<p><img data-src="leak100/all-256.gif" /></p>
+</section>
+<section id="k-regions-of-64-people-each-3" class="level2">
+<h2>1K Regions of 64 People each</h2>
+<p><img data-src="leak100/all-64.gif" /></p>
+</section>
+<section id="k-regions-of-16-people-each-3" class="level2">
+<h2>4K Regions of 16 People each</h2>
+<p><img data-src="leak100/all-16.gif" /></p>
+</section>
+<section id="k-regions-of-4-people-each-16k-families-3" class="level2">
+<h2>16K Regions of 4 People each (16K Families)</h2>
+<p><img data-src="leak100/all-4.gif" /></p>
+</section>
+</section>
+<section id="infection-rate" class="slide level1">
+<h1>Infection Rate</h1>
+<section id="no-travel-1" class="level2">
+<h2>No Travel</h2>
+<p><img data-src="leak000/infectious.png" /></p>
+</section>
+<section id="person-in-1000-travels-daily-1" class="level2">
+<h2>1 Person in 1000 Travels Daily</h2>
+<p><img data-src="leak001/infectious.png" /></p>
+</section>
+<section id="person-in-100-travels-daily-1" class="level2">
+<h2>1 Person in 100 Travels Daily</h2>
+<p><img data-src="leak010/infectious.png" /></p>
+</section>
+<section id="person-in-10-travels-daily-1" class="level2">
+<h2>1 Person in 10 Travels Daily</h2>
+<p><img data-src="leak100/infectious.png" /></p>
+</section>
+</section>
+<section id="total-number-infected" class="slide level1">
+<h1>Total Number Infected</h1>
+<section id="no-travel-2" class="level2">
+<h2>No Travel</h2>
+<p><img data-src="leak000/infected.png" /></p>
+</section>
+<section id="person-in-1000-travels-daily-2" class="level2">
+<h2>1 Person in 1000 Travels Daily</h2>
+<p><img data-src="leak001/infected.png" /></p>
+</section>
+<section id="person-in-100-travels-daily-2" class="level2">
+<h2>1 Person in 100 Travels Daily</h2>
+<p><img data-src="leak010/infected.png" /></p>
+</section>
+<section id="person-in-10-travels-daily-2" class="level2">
+<h2>1 Person in 10 Travels Daily</h2>
+<p><img data-src="leak100/infected.png" /></p>
+</section>
+</section>
+<section id="total-number-dead" class="slide level1">
+<h1>Total Number Dead</h1>
+<section id="no-travel-3" class="level2">
+<h2>No Travel</h2>
+<p><img data-src="leak000/dead.png" /></p>
+</section>
+<section id="person-in-1000-travels-daily-3" class="level2">
+<h2>1 Person in 1000 Travels Daily</h2>
+<p><img data-src="leak001/dead.png" /></p>
+</section>
+<section id="person-in-100-travels-daily-3" class="level2">
+<h2>1 Person in 100 Travels Daily</h2>
+<p><img data-src="leak010/dead.png" /></p>
+</section>
+<section id="person-in-10-travels-daily-3" class="level2">
+<h2>1 Person in 10 Travels Daily</h2>
+<p><img data-src="leak100/dead.png" /></p>
+</section>
+</section>
+    </div>
+  </div>
+
+  <script src="https://revealjs.com/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: "c",
+        // Push each slide change to the browser history
+        history: true,
+        // Vertical centering of slides
+        center: false,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1440,
+        // Factor of the display size that should remain empty around the content
+        margin: 0,
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'https://revealjs.com/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'https://revealjs.com/plugin/zoom-js/zoom.js', async: true },
+          { src: 'https://revealjs.com/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>
