@@ -1,10 +1,10 @@
 ---
-title: Modeling Infection Disease 
+title: Modeling Infectious  Disease 
 date: March 20, 2020
 author: Michael Deskevich (mikedeskevich@gmail.com)
 ---
 
-# Modeling Infection Disease
+# Modeling Infectious Disease
 
 * I'm a modeler at heart and I wanted to see if all of the _Social Distancing_ being prescribed makes a difference.  I have a gut feeling that it does, and that we're doing the right thing here, as opposed to the UK, which is going for herd immunity as their solution.
 * My plan here is to make a _very simple_ model with some _very rough assumptions_ that I've pulled out of the media and do a series of models to track the number of people infected and the number dead while an infectious disease makes it's way through a city.
@@ -19,9 +19,11 @@ author: Michael Deskevich (mikedeskevich@gmail.com)
 
 * I start with some small proportion of the population already infected.
 * I go through every person and randomly choose another person to interact with, if either is infected, they will infect the other with some probability.
-* Anyone who is infectious will stay infectious for a chunk of time, after which they either recover or die.
+* Anyone who is infectious<sup>1</sup> will stay infectious for a chunk of time, after which they either recover or die.
 * Infectious people who recover are labelled infected and are no longer carriers nor susceptible to the disease.
 * I repeat until there are no infectious people.
+
+1. I really should have labelled this _contagious_ but I don't feel like going back and regenerating all of the plots with the right term in there.
 
 ## Details
 

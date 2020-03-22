@@ -5,7 +5,7 @@
   <meta name="generator" content="pandoc">
   <meta name="author" content="Michael Deskevich (mikedeskevich@gmail.com)">
   <meta name="dcterms.date" content="2020-03-20">
-  <title>Modeling Infection Disease</title>
+  <title>Modeling Infectious Disease</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -37,13 +37,13 @@
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Modeling Infection Disease</h1>
+  <h1 class="title">Modeling Infectious Disease</h1>
   <p class="author">Michael Deskevich (mikedeskevich@gmail.com)</p>
   <p class="date">March 20, 2020</p>
 </section>
 
-<section id="modeling-infection-disease" class="slide level1">
-<h1>Modeling Infection Disease</h1>
+<section id="modeling-infectious-disease" class="slide level1">
+<h1>Modeling Infectious Disease</h1>
 <ul>
 <li>I’m a modeler at heart and I wanted to see if all of the <em>Social Distancing</em> being prescribed makes a difference. I have a gut feeling that it does, and that we’re doing the right thing here, as opposed to the UK, which is going for herd immunity as their solution.</li>
 <li>My plan here is to make a <em>very simple</em> model with some <em>very rough assumptions</em> that I’ve pulled out of the media and do a series of models to track the number of people infected and the number dead while an infectious disease makes it’s way through a city.</li>
@@ -62,10 +62,13 @@
 <ul>
 <li>I start with some small proportion of the population already infected.</li>
 <li>I go through every person and randomly choose another person to interact with, if either is infected, they will infect the other with some probability.</li>
-<li>Anyone who is infectious will stay infectious for a chunk of time, after which they either recover or die.</li>
+<li>Anyone who is infectious<sup>1</sup> will stay infectious for a chunk of time, after which they either recover or die.</li>
 <li>Infectious people who recover are labelled infected and are no longer carriers nor susceptible to the disease.</li>
 <li>I repeat until there are no infectious people.</li>
 </ul>
+<ol type="1">
+<li>I really should have labelled this <em>contagious</em> but I don’t feel like going back and regenerating all of the plots with the right term in there.</li>
+</ol>
 </section>
 <section id="details" class="level2">
 <h2>Details</h2>
