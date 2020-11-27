@@ -18,7 +18,7 @@ pptx: $(md:.md=.pptx)
 	--katex=/repo/Presentations/katex/ \
 	-s \
 	-t revealjs \
-	-V revealjs-url=/repo/Presentations/reveal.js \
+	-V revealjs-url=reveal.js \
 	-V theme=black \
 	-V center=false \
 	-V width:1920 \
@@ -34,7 +34,7 @@ index: covidsim.md
 	--highlight-style=breezedark \
 	-s \
 	-t revealjs \
-	-V revealjs-url=https://revealjs.com \
+	-V revealjs-url=reveal.js \
 	-V theme=black \
 	-V center=false \
 	-V width:1920 \
